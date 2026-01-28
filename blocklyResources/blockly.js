@@ -854,11 +854,11 @@ Blockly.Extensions.register('immediateValidator',
         this.fieldImage = block.getField('format');
         block.fieldImmediate = block.getField('immediate');
 
-        const generalRegexPattern = /^(-?(6[0-5]{2}[0-3][0-5]|[1-5][0-9]{4}|[1-9][0-9]{0,3}|0)|0x[0-9a-fA-F]{1,4}|0b[0-1]{1,16}|\'[a-zA-Z]\')$/;
+        const generalRegexPattern = /^(-?(6[0-5]{2}[0-3][0-5]|[1-5][0-9]{4}|[1-9][0-9]{0,3}|0)|0x[0-9a-fA-F]{1,4}|0b[0-1]{1,16}|\'([ -~]|\\a|\\n|\\r)\')$/;
         const decimalRegexPattern = /^-?(6[0-5]{2}[0-3][0-5]|[1-5][0-9]{4}|[1-9][0-9]{0,3}|0)$/;
         const hexRegexPattern = /^0x[0-9a-fA-F]{1,4}$/;
         const binaryRegexPattern = /^0b[0-1]{1,16}$/;
-        const charRegexPattern = /^\'[a-zA-Z]\'$/;
+        const charRegexPattern = /^\'([ -~]|\\a|\\n|\\r)\'$/;
 
         block.fieldImmediate.setValidator(function(newValue) {
             return generalRegexPattern.test(newValue) ? newValue : null;
@@ -877,17 +877,45 @@ Blockly.Extensions.register('immediateValidator',
             switch (block.format)
             {
                 case 0:
-                    block.fieldImmediate.setValue(value.charCodeAt(1));
+                    switch (value)
+                    {
+                        case '\'\\a\'':
+                            block.fieldImmediate.setValue(7);
+                            break;
+                        case '\'\\n\'':
+                            block.fieldImmediate.setValue(10);
+                            break;
+                        case '\'\\r\'':
+                            block.fieldImmediate.setValue(13);
+                            break;
+                        default:
+                            block.fieldImmediate.setValue(value.charCodeAt(1));
+                            break;
+                    }
                     break;
                 case 1:
-                    block.fieldImmediate.setValue(`0x${parseInt(value).toString(16)}`);
+                    block.fieldImmediate.setValue(`0x${(parseInt(value) >>> 0).toString(16).substring(4).toUpperCase()}`);
                     break;
                 case 2:
                     block.fieldImmediate.setValue(`0b${parseInt(value).toString(2)}`);
                     break;
                 case 3:
-                    value = parseInt(value.replace("0b", ""), 2);
-                    string = `\'${String.fromCharCode(value)}\'`;
+                    value = window.getSignedInt(value.replace("0b", ""));
+                    switch (value)
+                    {
+                        case 7:
+                            string = '\'\\a\'';
+                            break;
+                        case 10:
+                            string = '\'\\n\'';
+                            break;
+                        case 13:
+                            string = '\'\\r\'';
+                            break;
+                        default:
+                            string = `\'${String.fromCharCode(value)}\'`;
+                            break;
+                    }
                     if (charRegexPattern.test(string))
                     {
                         block.fieldImmediate.setValue(string);

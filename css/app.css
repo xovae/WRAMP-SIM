@@ -17,6 +17,16 @@ html, body {
     height: 95%
 }
 
+.overflow-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.overflow-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+
 .tab-pane {
     margin-top: 10px;
 }

@@ -190,28 +190,87 @@ window.changeFormat = (id) =>
 {
     const decimalRegexPattern = /^-?(6[0-5]{2}[0-3][0-5]|[1-5][0-9]{4}|[1-9][0-9]{0,3}|0)$/;
     const hexRegexPattern = /^0x[0-9a-fA-F]{1,4}$/;
-    const binaryRegexPattern = /^[0-1]{16}$/;
+    const binaryRegexPattern = /^0b[0-1]+$/;
+    const charRegexPattern = /^\'([ -~]|\\a|\\n|\\r)\'$/;
 
     let element = document.getElementById(id);
     let value = element.innerText;
 
-    //0: Decimal, 1: Hex, 2: Binary
+    //0: Decimal, 1: Hex, 2: Binary, 3: Char
     if (decimalRegexPattern.test(value)) format = 0;
     if (hexRegexPattern.test(value)) format = 1;
     if (binaryRegexPattern.test(value)) format = 2;
-    format = (format + 1) % 3;
+    if (charRegexPattern.test(value)) format = 3;
+    format = (format + 1) % 4;
 
     switch(format)
     {
         case 0:
-            element.innerText = parseInt(value, 2);
+            switch (value)
+            {
+                case '\'\\a\'':
+                    element.innerText = '7';
+                    break;
+                case '\'\\n\'':
+                    element.innerText = '10';
+                    break;
+                case '\'\\r\'':
+                    element.innerText = '13';
+                    break;
+                default:
+                    element.innerText = (value.charCodeAt(1));
+                    break;
+            }
             break;
         case 1:
-            element.innerText = '0x' + parseInt(value).toString(16);
+            element.innerText = `0x${(parseInt(value) >>> 0).toString(16).toUpperCase().padStart(4, '0')}`;
             break;
         case 2:
-            element.innerText = parseInt(value).toString(2).padStart(16, '0');
+            element.innerText = `0b${parseInt(value).toString(2).padStart(32, '0')}`;
             break;
+        case 3:
+            value = getSignedInt(value.replace("0b", ""));
+            switch (value)
+            {
+                case 7:
+                    string = '\'\\a\'';
+                    break;
+                case 10:
+                    string = '\'\\n\'';
+                    break;
+                case 13:
+                    string = '\'\\r\'';
+                    break;
+                default:
+                    string = `\'${String.fromCharCode(value)}\'`;
+                    break;
+            }
+            if (charRegexPattern.test(string))
+            {
+                element.innerText = (string);
+            }
+            else
+            {
+                element.innerText = (value);
+            }
+            break;
+    }
+}
+
+window.getSignedInt = (bits) =>
+{
+    if (bits[0] === '1')
+    {
+        let inverse = '';
+        for (i = 0; i < bits.length; i++)
+        {
+            inverse += (bits[i] === '0' ? '1' : '0');
+        }
+        return (parseInt(inverse, 2) + 1) * -1;
+    }
+    else
+    {
+        return parseInt(bits, 2);
     }
 }
 
