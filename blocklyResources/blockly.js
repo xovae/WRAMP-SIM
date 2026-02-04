@@ -894,7 +894,7 @@ Blockly.Extensions.register('immediateValidator',
                     }
                     break;
                 case 1:
-                    block.fieldImmediate.setValue(`0x${(parseInt(value) >>> 0).toString(16).substring(4).toUpperCase()}`);
+                    block.fieldImmediate.setValue(`0x${(parseInt(value) >>> 0).toString(16).toUpperCase()}`);
                     break;
                 case 2:
                     block.fieldImmediate.setValue(`0b${parseInt(value).toString(2)}`);
