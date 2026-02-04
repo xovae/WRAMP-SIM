@@ -1,7 +1,8 @@
 window.levelSelect = () =>
 {
     //Account for the edge case of the main page not having a path name
-    let levelID = window.location.pathname.substring(1);
+    let domains = window.location.pathname.split('/');
+    let levelID = domains[domains.length - 1];
 
     let level = document.querySelector('a[href="' + ((levelID === '') ? '.' : levelID) + '"]');
 
