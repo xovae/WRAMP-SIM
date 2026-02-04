@@ -14,13 +14,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>WRAMP Sim</title>
         <base href="/WRAMP-SIM/" />
-        <link rel="preload" id="webassembly" />
+        <link href="_framework/dotnet.6ecyyvrtdl.js" rel="preload" as="script" fetchpriority="high" crossorigin="anonymous" integrity="sha256-wl5hPBCF++OfeDFhPo+oLD7n0vYArIttEPmskQWvmww=" />
         <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <link rel="stylesheet" href="css/app.css" />
         <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
         <link href="BlazorApp.styles.css" rel="stylesheet" />
-        <script type="importmap"></script>
+        <script type="importmap">{
+  "imports": {
+    "./_framework/blazor.webassembly.js": "./_framework/blazor.webassembly.66stpp682q.js",
+    "./_framework/dotnet.js": "./_framework/dotnet.6ecyyvrtdl.js",
+    "./_framework/dotnet.native.js": "./_framework/dotnet.native.xanz2e7ksm.js",
+    "./_framework/dotnet.runtime.js": "./_framework/dotnet.runtime.o0qy896u8v.js"
+  },
+  "scopes": {},
+  "integrity": {
+    "./_framework/blazor.webassembly.66stpp682q.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/blazor.webassembly.js": "sha256-3lCWrko3zwspV40aQhs2S/IMkRSarnHRKIdkHhuXIBA=",
+    "./_framework/dotnet.6ecyyvrtdl.js": "sha256-wl5hPBCF++OfeDFhPo+oLD7n0vYArIttEPmskQWvmww=",
+    "./_framework/dotnet.js": "sha256-wl5hPBCF++OfeDFhPo+oLD7n0vYArIttEPmskQWvmww=",
+    "./_framework/dotnet.native.js": "sha256-uQpMf2vCY3ZTY+nV2gmp8VdAe67PW6h1gInkE7r/PLY=",
+    "./_framework/dotnet.native.xanz2e7ksm.js": "sha256-uQpMf2vCY3ZTY+nV2gmp8VdAe67PW6h1gInkE7r/PLY=",
+    "./_framework/dotnet.runtime.js": "sha256-yJvgPPUUvavYVmu9VD/fYtMcoEnLVaB0Cr7JAE29btw=",
+    "./_framework/dotnet.runtime.o0qy896u8v.js": "sha256-yJvgPPUUvavYVmu9VD/fYtMcoEnLVaB0Cr7JAE29btw="
+  }
+}</script>
         <audio src="audio/duckQuack.wav" id="duckQuack"></audio>
         <audio src="audio/kcauQkcud.mp3" id="kcauQkcud"></audio>
     </head>
@@ -39,7 +57,7 @@
             <a href="." class="reload">Reload</a>
             <span class="dismiss">🗙</span>
         </div>
-        <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+        <script src="_framework/blazor.webassembly.66stpp682q.js"></script>
         <script src="lib/bootstrap/dist/js/popper.min.js"></script>
         <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
 
