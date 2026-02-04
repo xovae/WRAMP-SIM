@@ -4,6 +4,9 @@ window.levelSelect = () =>
     let domains = window.location.pathname.split('/');
     let levelID = domains[domains.length - 1];
 
+    console.log(window.location.pathname);
+    console.log(levelID);
+
     let level = document.querySelector('a[href="' + ((levelID === '') ? '.' : levelID) + '"]');
 
     //Highlight the link as active, and set aria-active to the current link
