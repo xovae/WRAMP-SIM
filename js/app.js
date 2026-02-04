@@ -1,10 +1,9 @@
 window.levelSelect = () =>
 {
-    let pathName = window.location.pathname;
-
     //Account for the edge case of the main page not having a path name
-    let levelID = (pathName == "/") ? "sandbox" : pathName.substring(1);
-    let level = (levelID == "sandbox") ? document.querySelector('a[href="/"') : document.querySelector('a[href="/' + levelID + '"]')
+    let levelID = window.location.pathname;
+
+    let level = document.querySelector('a[href="' + levelID + '"]');
 
     //Highlight the link as active, and set aria-active to the current link
     level.classList.add('active');
