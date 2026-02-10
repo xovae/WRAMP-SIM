@@ -22,13 +22,29 @@ window.levelCheck = () =>
         if (localStorage.getItem(href) != null)
         {
             //Show the checkmark
-            checkmarkID = href + 'Checkmark';
-            let checkmark = document.getElementById(checkmarkID);
+            let checkmark = levelElements[i].getElementsByClassName('inputCheckmark')[0];
             checkmark.style.opacity = 1;
 
             //Change to white for the currently selected level
             if (levelElements[i].classList.contains('active')) checkmark.style.color = 'white';
         }
+    }
+}
+
+window.levelCompleted = () =>
+{
+    id = window.location.pathname.substring(1);
+    localStorage.setItem(id, true);
+    levelCheck();
+}
+
+window.resetLevels = () =>
+{
+    if (confirm('This will reset all level progress, including any code in your workspaces!') == true)
+    {
+        let theme = localStorage.getItem('theme');
+        localStorage.clear();
+        localStorage.setItem('theme', theme);
     }
 }
 
@@ -83,7 +99,6 @@ window.objectiveCheck = (id) =>
     if (!checkmark.classList.contains('visible'))
     {
         checkmark.classList.add('visible');
-        document.getElementById('duckQuack')?.play();
     }
 }
 
@@ -95,7 +110,7 @@ window.objectiveUncheck = (id) =>
     if (checkmark.classList.contains('visible'))
     {
         checkmark.classList.remove('visible');
-        document.getElementById('kcauQkcud')?.play();
+        // document.getElementById('kcauQkcud')?.play();
     }
 }
 
@@ -109,11 +124,16 @@ window.objectiveUncheckAll = () =>
     }
 }
 
-window.levelCompleted = () =>
+window.storeSection = (section) =>
 {
-    id = window.location.pathname.substring(1);
-    localStorage.setItem(id, true);
-    levelCheck();
+    id = window.location.pathname.substring(1) + 'Section';
+    localStorage.setItem(id, section);
+}
+
+window.getSection = () =>
+{
+    id = window.location.pathname.substring(1) + 'Section';
+    return Number(localStorage.getItem(id)) || 0;
 }
 
 var popover;

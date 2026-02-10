@@ -10,7 +10,7 @@ window.initBlockly = (tool, instances, snippet) =>
         instances = instances.replaceAll("\'", "\"");
     }
     Instances = JSON.parse(instances);
-    workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox, theme: lightModeTheme, maxInstances: Instances});
+    workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox, theme: lightModeTheme, maxInstances: Instances, sounds: false});
     window.codeSaved = true;
     blocklyStorage = window.location.pathname.substring(1) + "Blockly";
 
@@ -1021,13 +1021,16 @@ window.updateToolbox = (toolbox) =>
 
 window.resetWorkspace = () =>
 {
-    if (presetWorkspace != null)
+    if (confirm('Do you want to clear your workspace?') == true)
     {
-        loadWorkspace(presetWorkspace);
-    }
-    else
-    {
-        workspace.clear();
+        if (presetWorkspace != null)
+        {
+            loadWorkspace(presetWorkspace);
+        }
+        else
+        {
+            workspace.clear();
+        }
     }
 }
 
