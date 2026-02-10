@@ -91,6 +91,12 @@ window.quacker = () =>
     audio.play();
 }
 
+window.evilquacker = () =>
+{
+    let audio = document.getElementById('kcauQkcud');
+    audio.play();
+}
+
 window.objectiveCheck = (id) =>
 {
     const checkmark = document.getElementById(id);
