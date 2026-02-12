@@ -78,33 +78,44 @@ window.selectAllLevels = () =>
 
 window.codeSaved = true;
 
-window.saveCode = async () =>
+window.saveCode = async (Library) =>
 {
-    code = document.getElementById('wsimCode').innerHTML;
-    code = code.replaceAll('<br>', '\n');
-    code = code.replaceAll('&emsp;', '\t');
-    code += `
+    let codeDiv = document.getElementById('wsimCode');
+    let code = '';
 
+    //Add the user's code (if there is any)
+    if (codeDiv != null)
+    {
+        code = document.getElementById('wsimCode').innerHTML;
+        code = code.replaceAll('<br>', '\n');
+        code = code.replaceAll('&emsp;', '\t');
+    }
+    //Add any library code
+    if (Library != null)
+    {
+        code += '\n' + Library + '\n';
+    }
+    //Add the provided EQUs
+    code += `\n\n#Provided EQUs:
+    .equ sp1_tx,      0x70000
+    .equ sp1_rx,      0x70001
+    .equ sp1_ctrl,    0x70002
+    .equ sp1_stat,    0x70003
+    .equ sp1_iack,    0x70004
+    .equ par_switch,  0x73000
+    .equ par_btn,	  0x73001
+    .equ par_ctrl,    0x73004
+    .equ par_iack,    0x73005
+    .equ par_ulssd,   0x73006
+    .equ par_urssd,   0x73007
+    .equ par_llssd,   0x73008
+    .equ par_lrssd,   0x73009
+    .equ par_led,     0x7300A`;
 
-#Provided EQUs:
-.equ sp1_tx,      0x70000
-.equ sp1_rx,      0x70001
-.equ sp1_ctrl,    0x70002
-.equ sp1_stat,    0x70003
-.equ sp1_iack,    0x70004
-.equ par_switch,  0x73000
-.equ par_btn,	    0x73001
-.equ par_ctrl,    0x73004
-.equ par_iack,    0x73005
-.equ par_ulssd,   0x73006
-.equ par_urssd,   0x73007
-.equ par_llssd,   0x73008
-.equ par_lrssd,   0x73009
-.equ par_led,     0x7300A`;
-
+    //Determine the name for the file
     let domain = window.location.pathname.split('/');
     let levelID = domain[domain.length - 1];
-    saveFile(code, levelID === '' ? 'sandboxCode.json' : `${levelID}Code.json`);
+    saveFile(code, levelID === '' ? 'sandboxCode.s' : `${levelID}Code.s`);
 }
 
 window.saveFile = async (content, name) =>
