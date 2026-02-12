@@ -1,8 +1,8 @@
 window.levelSelect = () =>
 {
     //Account for the edge case of the main page not having a path name
-    let domains = window.location.pathname.split('/');
-    let levelID = domains[domains.length - 1];
+    let domain = window.location.pathname.split('/');
+    let levelID = domain[domain.length - 1];
 
     let level = document.querySelector('a[href="' + ((levelID === '') ? '.' : levelID) + '"]');
 
@@ -33,19 +33,40 @@ window.levelCheck = () =>
 
 window.levelCompleted = () =>
 {
-    id = window.location.pathname.substring(1);
-    localStorage.setItem(id, true);
+    let domain = window.location.pathname.split('/');
+    let levelID = domain[domain.length - 1];
+    localStorage.setItem(levelID === '' ? 'sandbox' : levelID, true);
     levelCheck();
 }
 
 window.resetLevels = () =>
 {
-    if (confirm('This will reset all level progress, including any code in your workspaces!') == true)
-    {
-        let theme = localStorage.getItem('theme');
-        localStorage.clear();
-        localStorage.setItem('theme', theme);
-    }
+    const modalDiv = document.getElementById('deleteModalBody');
+    modalDiv.innerHTML = '';
+    document.querySelectorAll('.levelLink').forEach( element => {
+        let levelName = element.innerText.replace('✔', '');
+        let domain  = element.href.split('/');
+        let levelID = (domain[domain.length - 1] === '' ? 'sandbox' : domain[domain.length - 1]);
+
+        modalDiv.innerHTML += `<input class="mb-1 me-1 form-check-input deleteCheckbox" id="${levelID}" type="checkbox"><label class="form-check-label" for="${levelID}">${levelName}</label><br>`;
+    });
+}
+
+window.deleteLevelProgress = () =>
+{
+    const keys = Object.keys(localStorage);
+    document.querySelectorAll('.deleteCheckbox').forEach(checkbox => {
+        if (checkbox.checked === true)
+        {
+            keys.forEach(key => {
+                if (key.includes(checkbox.id))
+                {
+                    localStorage.removeItem(key);
+                }
+            });
+        }
+    });
+    window.location.reload();
 }
 
 window.codeSaved = true;
@@ -54,16 +75,40 @@ window.saveCode = async () =>
 {
     code = document.getElementById('wsimCode').innerHTML;
     code = code.replaceAll('<br>', '\n');
-    code = code.replaceAll('&emsp;', '\t')
-    saveFile(code, 'code.s');
+    code = code.replaceAll('&emsp;', '\t');
+    code += `
+
+
+#Provided EQUs:
+.equ sp1_tx,      0x70000
+.equ sp1_rx,      0x70001
+.equ sp1_ctrl,    0x70002
+.equ sp1_stat,    0x70003
+.equ sp1_iack,    0x70004
+.equ par_switch,  0x73000
+.equ par_btn,	    0x73001
+.equ par_ctrl,    0x73004
+.equ par_iack,    0x73005
+.equ par_ulssd,   0x73006
+.equ par_urssd,   0x73007
+.equ par_llssd,   0x73008
+.equ par_lrssd,   0x73009
+.equ par_led,     0x7300A`;
+
+    let domain = window.location.pathname.split('/');
+    let levelID = domain[domain.length - 1];
+    saveFile(code, levelID === '' ? 'sandboxCode.json' : `${levelID}Code.json`);
 }
 
 window.saveFile = async (content, name) =>
 {
+    let index = name.indexOf('.');
+    let nameWithDate = name.slice(0, index) + new Date().toISOString().split('T')[0] + name.slice(index);
+
     const file = new Blob([content], { type: 'text/plain' });
 
     const link = document.createElement('a');
-    link.download = name;
+    link.download = nameWithDate;
     link.href = URL.createObjectURL(file);
     document.body.appendChild(link);
     link.click();
@@ -132,13 +177,17 @@ window.objectiveUncheckAll = () =>
 
 window.storeSection = (section) =>
 {
-    id = window.location.pathname.substring(1) + 'Section';
+    let domain = window.location.pathname.split('/');
+    let levelID = domain[domain.length - 1];
+    id = (levelID === '' ? 'sandbox' : levelID) + 'Section';
     localStorage.setItem(id, section);
 }
 
 window.getSection = () =>
 {
-    id = window.location.pathname.substring(1) + 'Section';
+    let domain = window.location.pathname.split('/');
+    let levelID = domain[domain.length - 1];
+    id = (levelID === '' ? 'sandbox' : levelID) + 'Section';
     return Number(localStorage.getItem(id)) || 0;
 }
 
@@ -146,6 +195,10 @@ var popover;
 
 window.triggerPopover = (error) =>
 {
+    //Clear any existing popovers
+    clearPopovers();
+
+    //Create new popover with provided error message
     var popoverElement = document.getElementById('compileButton');
     popoverElement.setAttribute('data-bs-content', error);
     popover = new bootstrap.Popover(popoverElement);
@@ -303,7 +356,6 @@ window.changeFormat = (id, instruction) =>
             break;
     }
 }
-
 
 window.getSignedInt = (bits, instruction) =>
 {
