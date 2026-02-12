@@ -69,6 +69,13 @@ window.deleteLevelProgress = () =>
     window.location.reload();
 }
 
+window.selectAllLevels = () =>
+{
+    document.querySelectorAll('.deleteCheckbox').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+}
+
 window.codeSaved = true;
 
 window.saveCode = async () =>
