@@ -160,6 +160,21 @@ window.evilquacker = () =>
     audio.play();
 }
 
+var dotNetReference = null;
+
+window.setAppDotNetRef = (dotnetRef) =>
+{
+    dotNetReference = dotnetRef;
+}
+
+window.InvokeBoardChanged = () =>
+{
+    if (dotNetReference != null)
+    {
+        dotNetReference.invokeMethodAsync('InvokeBoardChanged');
+    }
+}
+
 window.objectiveCheck = (id) =>
 {
     const checkmark = document.getElementById(id);
@@ -193,19 +208,19 @@ window.objectiveUncheckAll = () =>
     }
 }
 
-window.storeSection = (section) =>
+window.storeProgress = (type, section) =>
 {
     let domain = window.location.pathname.split('/');
     let levelID = domain[domain.length - 1];
-    id = (levelID === '' ? 'sandbox' : levelID) + 'Section';
+    id = (levelID === '' ? 'sandbox' : levelID) + type;
     localStorage.setItem(id, section);
 }
 
-window.getSection = () =>
+window.getProgress = (type) =>
 {
     let domain = window.location.pathname.split('/');
     let levelID = domain[domain.length - 1];
-    id = (levelID === '' ? 'sandbox' : levelID) + 'Section';
+    id = (levelID === '' ? 'sandbox' : levelID) + type;
     return Number(localStorage.getItem(id)) || 0;
 }
 

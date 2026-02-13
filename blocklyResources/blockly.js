@@ -3,14 +3,14 @@ let presetCode;
 let presetWorkspace;
 let compiledCode;
 
-window.initBlockly = (tool, instances, snippet) =>
+window.initBlockly = (tool, instances, startingWorkspace) =>
 {
     toolbox = JSON.parse(tool);
     if (instances != null)
     {
         instances = instances.replaceAll("\'", "\"");
     }
-    Instances = JSON.parse(instances);
+    let Instances = JSON.parse(instances);
     workspace = Blockly.inject('blocklyDiv', {toolbox: toolbox, theme: lightModeTheme, maxInstances: Instances, sounds: false});
     window.codeSaved = true;
 
@@ -24,11 +24,11 @@ window.initBlockly = (tool, instances, snippet) =>
     {
         loadWorkspace(state);
     }
-    else if (snippet != null)
+    else if (startingWorkspace != null)
     {
-        loadWorkspace(snippet);
+        loadWorkspace(startingWorkspace);
         presetCode = generateCode();
-        presetWorkspace = snippet;
+        presetWorkspace = startingWorkspace;
     }
 }
 
@@ -1021,7 +1021,7 @@ window.initUpdate = () => {
 
 window.getGeneratedCode = () =>
 {
-    return document.getElementById('wsimCode').textContent;
+    return document.getElementById('wsimCode').innerHTML.replaceAll('<br>', '\n');
 }
 
 window.saveWorkspace = () =>
